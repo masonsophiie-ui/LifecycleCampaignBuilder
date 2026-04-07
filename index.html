@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lifecycle Campaign Builder — Sophie Mason</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0C0C0A;
+  --surface:#141412;
+  --surface2:#1A1A17;
+  --border:#2A2A24;
+  --border2:#38382F;
+  --accent:#E9FF52;
+  --text:#F5F4ED;
+  --muted:#8A8A7E;
+  --mid:#C4C3B5;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;line-height:1.5}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;background:rgba(12,12,10,0.9);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color 0.3s}
+.nav.scrolled{border-color:var(--border)}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.05em;color:var(--text)}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{background:var(--accent);color:#000 !important;padding:9px 16px}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:60px 60px 80px;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg svg{width:100%;height:100%;opacity:0.06}
+.hero-content{position:relative;z-index:1;max-width:1100px}
+.hero-tag{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:32px;display:flex;align-items:center;gap:12px}
+.hero-tag::before{content:'';display:block;width:40px;height:1px;background:var(--accent)}
+.hero-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(64px,11vw,150px);line-height:0.88;letter-spacing:-0.01em;color:var(--text);margin-bottom:28px}
+.hero-name span{color:var(--accent);display:block}
+.hero-desc{font-size:17px;color:var(--mid);max-width:580px;line-height:1.7;margin-bottom:40px;font-weight:300}
+.hero-desc strong{color:var(--text);font-weight:400}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+.hero-cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#000;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:16px 26px;text-decoration:none;transition:all 0.2s;border:1px solid var(--accent)}
+.hero-cta:hover{background:#d4eb00;transform:translateY(-2px)}
+.hero-cta svg{width:16px;height:16px}
+.hero-cta.ghost{background:transparent;color:var(--text);border:1px solid var(--border2)}
+.hero-cta.ghost:hover{background:var(--surface);border-color:var(--mid)}
+.hero-scroll{position:absolute;right:60px;bottom:80px;writing-mode:vertical-rl;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:12px}
+.hero-scroll::after{content:'';display:block;width:1px;height:60px;background:var(--muted)}
+
+.why-section{padding:120px 60px;border-bottom:1px solid var(--border)}
+.why-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:80px;max-width:1400px;margin:0 auto}
+.why-label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+.why-title{font-family:'Bebas Neue',sans-serif;font-size:72px;letter-spacing:0.01em;line-height:0.95;color:var(--text)}
+.why-title span{color:var(--accent)}
+.why-body p{font-size:17px;color:var(--mid);line-height:1.75;margin-bottom:22px;font-weight:300}
+.why-body p strong{color:var(--text);font-weight:400}
+.why-body p:last-child{margin-bottom:0}
+.why-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-top:48px;border:1px solid var(--border)}
+.why-stat{background:var(--bg);padding:28px 24px}
+.why-stat-num{font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--accent);line-height:1}
+.why-stat-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);margin-top:8px}
+
+.how-section{padding:120px 60px;background:var(--surface);border-bottom:1px solid var(--border)}
+.how-head{max-width:1400px;margin:0 auto 64px}
+.how-label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.how-title{font-family:'Bebas Neue',sans-serif;font-size:64px;letter-spacing:0.01em;line-height:0.95;max-width:800px}
+.how-sub{font-size:16px;color:var(--mid);max-width:600px;margin-top:20px;line-height:1.7}
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1400px;margin:0 auto}
+.how-card{background:var(--bg);border:1px solid var(--border);padding:28px}
+.how-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.1em;margin-bottom:16px}
+.how-ct{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.02em;margin-bottom:10px;color:var(--text)}
+.how-cd{font-size:13px;color:var(--mid);line-height:1.65;font-weight:300}
+
+.engine-section{padding:120px 60px;border-bottom:1px solid var(--border)}
+.engine-head{max-width:1400px;margin:0 auto 56px}
+.engine-label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.engine-title{font-family:'Bebas Neue',sans-serif;font-size:64px;letter-spacing:0.01em;line-height:0.95;margin-bottom:16px}
+.engine-sub{font-size:16px;color:var(--mid);max-width:640px;line-height:1.7;font-weight:300}
+
+.api-gate{background:var(--surface);border:1px solid var(--border);padding:32px;margin:0 auto 32px;max-width:1400px}
+.api-gate-row{display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center}
+.api-gate-label{display:flex;flex-direction:column;gap:4px;max-width:320px}
+.api-gate-title{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent)}
+.api-gate-desc{font-size:12px;color:var(--mid);line-height:1.5;font-weight:300}
+.api-gate-desc a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent)}
+.api-input{background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:13px 16px;outline:none;transition:border-color 0.2s;width:100%}
+.api-input:focus{border-color:var(--accent)}
+.api-input::placeholder{color:#3a3a33}
+.api-save-btn{background:var(--accent);color:#000;border:none;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:13px 22px;cursor:pointer;transition:background 0.2s;white-space:nowrap}
+.api-save-btn:hover{background:#d4eb00}
+.api-ok{display:none;margin-top:16px;padding:10px 14px;background:rgba(68,255,136,0.05);border:1px solid rgba(68,255,136,0.3);font-family:'DM Mono',monospace;font-size:11px;color:#44ff88;letter-spacing:0.08em}
+
+.engine-layout{display:grid;grid-template-columns:380px 1fr;gap:24px;align-items:start;max-width:1400px;margin:0 auto}
+.engine-form{background:var(--surface);border:1px solid var(--border);padding:32px;display:flex;flex-direction:column;gap:22px;position:sticky;top:90px}
+.ef-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px}
+.ef-help{font-size:11px;color:var(--muted);margin-top:6px;font-style:italic;line-height:1.4}
+.ef-input,.ef-select{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;font-size:13px;padding:12px 14px;outline:none;transition:border-color 0.2s}
+.ef-input:focus,.ef-select:focus{border-color:var(--accent)}
+.ef-input::placeholder{color:#3a3a33}
+.ef-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='%23C4C3B5' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:12px;padding-right:36px}
+.gen-btn{width:100%;padding:18px;background:var(--accent);color:#000;border:none;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:4px}
+.gen-btn:hover:not(:disabled){background:#d4eb00;transform:translateY(-1px)}
+.gen-btn:disabled{background:#1c1c18;color:#333;cursor:not-allowed}
+.gen-btn.busy{background:var(--surface2);color:var(--accent);border:1px solid var(--accent)}
+
+.engine-output{min-height:500px}
+.eo-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:500px;gap:16px;color:var(--muted);background:var(--surface);border:1px dashed var(--border);padding:40px}
+.eo-empty-icon{font-size:48px;opacity:0.25}
+.eo-empty-text{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid)}
+.eo-empty-sub{font-size:13px;color:var(--muted);text-align:center;max-width:320px;line-height:1.6}
+.eo-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.eo-meta-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 12px var(--accent);animation:p 2s ease infinite}
+@keyframes p{0%,100%{opacity:0.4}50%{opacity:1}}
+
+.eo-section{background:var(--surface);border:1px solid var(--border);margin-bottom:18px;overflow:hidden}
+.eo-sh{padding:20px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface2);gap:14px}
+.eo-sh-left{display:flex;align-items:center;gap:14px;min-width:0}
+.eo-sh-icon{width:34px;height:34px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);flex-shrink:0}
+.eo-sh-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.03em;color:var(--text);line-height:1}
+.eo-sh-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);letter-spacing:0.08em;text-transform:uppercase;margin-top:4px}
+.cp-btn{background:transparent;border:1px solid var(--border2);color:var(--mid);font-family:'DM Mono',monospace;font-size:10px;padding:6px 12px;cursor:pointer;transition:all 0.15s;letter-spacing:0.05em;text-transform:uppercase;flex-shrink:0}
+.cp-btn:hover{border-color:var(--accent);color:var(--accent)}
+.cp-btn.done{border-color:#44ff88;color:#44ff88}
+.eo-body{padding:26px}
+
+.wf-grid{display:grid;grid-template-columns:130px 1fr;gap:14px 24px;font-family:'DM Mono',monospace;font-size:12px}
+.wf-k{color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-size:10px;padding-top:3px}
+.wf-v{color:var(--text);line-height:1.65}
+.wf-name{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent);letter-spacing:0.02em;margin-bottom:20px;line-height:1}
+.wf-steps{display:flex;flex-direction:column;gap:8px}
+.wf-step{display:flex;gap:14px;padding:12px 16px;background:var(--bg);border-left:2px solid var(--accent);font-family:'DM Mono',monospace;font-size:12px;color:var(--mid);line-height:1.5}
+.wf-step-n{color:var(--accent);font-weight:500;flex-shrink:0}
+
+.em-wrap{display:flex;flex-direction:column;gap:18px}
+.em-card{background:var(--bg);border:1px solid var(--border)}
+.em-head{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.em-day{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);padding:4px 10px;border:1px solid var(--accent);background:rgba(233,255,82,0.05);flex-shrink:0}
+.em-subj{font-family:'DM Sans',sans-serif;font-weight:400;font-size:14px;color:var(--text);flex:1}
+.em-prev{padding:12px 20px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--muted);border-bottom:1px solid var(--border);font-style:italic;line-height:1.5}
+.em-body{padding:22px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--mid);line-height:1.75;white-space:pre-wrap;font-weight:300}
+
+.dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.sms-frame{background:var(--bg);border:1px solid var(--border);padding:24px;border-radius:20px;max-width:300px;margin:10px auto;position:relative}
+.sms-frame::before{content:'';position:absolute;top:10px;left:50%;transform:translateX(-50%);width:40px;height:4px;background:var(--border2);border-radius:2px}
+.sms-from{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:14px;margin-bottom:10px}
+.sms-msg{background:var(--surface2);padding:13px 16px;border-radius:16px;font-size:13px;color:var(--text);line-height:1.5}
+.sms-count{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:8px;text-align:right}
+.ad-frame{background:var(--bg);border:1px solid var(--border);padding:24px;display:flex;flex-direction:column;justify-content:center}
+.ad-hl{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1.05;color:var(--text);margin-bottom:12px;letter-spacing:0.01em}
+.ad-bd{font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:18px}
+.ad-cta{display:inline-block;background:var(--accent);color:#000;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:10px 18px;align-self:flex-start}
+
+.met-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.met-card{background:var(--bg);border:1px solid var(--border);padding:20px}
+.met-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.met-text{font-size:13px;color:var(--mid);line-height:1.55}
+
+.eo-err{background:#130808;border:1px solid #3a1111;color:#ff8080;padding:18px 22px;font-family:'DM Mono',monospace;font-size:12px;margin-bottom:16px;line-height:1.6}
+.sk{background:var(--surface2);border:1px solid var(--border);animation:skp 1.4s ease infinite;margin-bottom:18px}
+.sk.tall{height:220px}
+.sk.med{height:140px}
+.sk.short{height:90px}
+@keyframes skp{0%,100%{opacity:0.3}50%{opacity:0.7}}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fi{animation:fi 0.4s ease forwards}
+
+.footer{padding:80px 60px 50px;border-top:1px solid var(--border);background:var(--surface)}
+.footer-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1.2fr 1fr;gap:60px;align-items:end}
+.footer-left{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,72px);line-height:0.95;letter-spacing:0.01em}
+.footer-left span{color:var(--accent)}
+.footer-right{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);letter-spacing:0.08em;line-height:2;text-align:right}
+.footer-right a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;transition:border-color 0.2s}
+.footer-right a:hover{border-color:var(--accent)}
+.footer-meta{max-width:1400px;margin:60px auto 0;padding-top:32px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase}
+
+@media(max-width:1100px){
+  .why-grid{grid-template-columns:1fr;gap:40px}
+  .engine-layout{grid-template-columns:1fr}
+  .engine-form{position:static}
+}
+@media(max-width:800px){
+  .hero,.why-section,.how-section,.engine-section,.footer{padding:80px 24px}
+  .nav{padding:18px 24px}
+  .nav-links{gap:16px}
+  .how-grid{grid-template-columns:1fr}
+  .hero-scroll{display:none}
+  .api-gate-row{grid-template-columns:1fr}
+  .dual-grid{grid-template-columns:1fr}
+  .met-grid{grid-template-columns:1fr}
+  .wf-grid{grid-template-columns:1fr;gap:6px}
+  .wf-k{padding-top:10px}
+  .footer-inner{grid-template-columns:1fr;gap:30px}
+  .footer-right{text-align:left}
+  .footer-meta{flex-direction:column;gap:10px}
+}
+
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-logo">SM<span>.</span></div>
+  <div class="nav-links">
+    <a href="#why">Note</a>
+    <a href="#how">Framework</a>
+    <a href="#engine" class="nav-cta">Try It</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg">
+    <svg viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#E9FF52" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="1400" height="900" fill="url(#grid)"/>
+    </svg>
+  </div>
+  <div class="hero-content">
+    <div class="hero-tag">A lifecycle tool · For admissions teams</div>
+    <div class="hero-name">Campaign<span>Builder.</span></div>
+    <p class="hero-desc">
+      Been building small AI tools over the last few months. This one turns an admissions brief into a full multi-touch sequence — <strong>HubSpot workflow, emails, SMS, retargeting, the lot</strong>. Tuned for further and higher education.
+    </p>
+    <div class="hero-ctas">
+      <a href="#engine" class="hero-cta">
+        Try it
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M8 3l5 5-5 5"/></svg>
+      </a>
+      <a href="#why" class="hero-cta ghost">A note from me</a>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<section class="why-section" id="why">
+  <div class="why-grid">
+    <div class="fade-up">
+      <div class="why-label">01 — A note</div>
+      <h2 class="why-title">Hope it's<br/><span>handy.</span></h2>
+    </div>
+    <div class="why-body fade-up">
+      <p>I've been using Claude to build small tools over the last few months, mostly to see what it can actually do when you give it proper context. The trick is that a tool only really works when it knows the specific ground it's standing on — the voice, the audience, the funnel it's serving.</p>
+      <p>So this one is tuned for further and higher education admissions. Faculties, lifecycle stages, and the shape of a real student journey are all baked into the prompt itself. The output sounds like <strong>a warm admissions advisor, not generic ed marketing</strong>.</p>
+      <p>If it saves you ten minutes on a 2026 campaign brief, or even just sparks one good idea, that's a nice outcome.</p>
+      <div class="why-stats">
+        <div class="why-stat">
+          <div class="why-stat-num">7</div>
+          <div class="why-stat-label">Faculties covered</div>
+        </div>
+        <div class="why-stat">
+          <div class="why-stat-num">6</div>
+          <div class="why-stat-label">Lifecycle stages</div>
+        </div>
+        <div class="why-stat">
+          <div class="why-stat-num">∞</div>
+          <div class="why-stat-label">Sequences ready</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how-section" id="how">
+  <div class="how-head fade-up">
+    <div class="how-label">02 — The framework</div>
+    <h2 class="how-title">Six lifecycle stages.<br/>One funnel.</h2>
+    <p class="how-sub">Every enquiry lives at a specific point in the journey from stranger to student to alumni. Each stage needs its own voice, its own offer, and its own sequence.</p>
+  </div>
+  <div class="how-grid">
+    <div class="how-card fade-up">
+      <div class="how-num">STAGE · 01</div>
+      <div class="how-ct">Cold Lead</div>
+      <div class="how-cd">First contact from a paid ad or organic search. No relationship yet. The job is curiosity and trust.</div>
+    </div>
+    <div class="how-card fade-up">
+      <div class="how-num">STAGE · 02</div>
+      <div class="how-ct">Abandoned Application</div>
+      <div class="how-cd">Started the form and dropped. One of the biggest conversion levers hiding in any admissions funnel.</div>
+    </div>
+    <div class="how-card fade-up">
+      <div class="how-num">STAGE · 03</div>
+      <div class="how-ct">Pre-Enrolment Push</div>
+      <div class="how-cd">Offer made, deposit pending, intake approaching. Urgency without panic.</div>
+    </div>
+    <div class="how-card fade-up">
+      <div class="how-num">STAGE · 04</div>
+      <div class="how-ct">Pre-Start Welcome</div>
+      <div class="how-cd">Enrolled but not yet started. Reduce no-show rate. Build belonging before day one.</div>
+    </div>
+    <div class="how-card fade-up">
+      <div class="how-num">STAGE · 05</div>
+      <div class="how-ct">Re-engagement</div>
+      <div class="how-cd">Lapsed leads from previous intakes. Warm data sitting in HubSpot. Reactivate for the next cohort.</div>
+    </div>
+    <div class="how-card fade-up">
+      <div class="how-num">STAGE · 06</div>
+      <div class="how-ct">Alumni Upsell</div>
+      <div class="how-cd">Graduates moving to the next qualification. Lowest cost, highest lifetime value segment in any college.</div>
+    </div>
+  </div>
+</section>
+
+<section class="engine-section" id="engine">
+  <div class="engine-head fade-up">
+    <div class="engine-label">03 — The live engine</div>
+    <h2 class="engine-title">Campaign Builder</h2>
+    <p class="engine-sub">Pick a faculty, pick a stage, hit generate. Claude returns a complete multi-touch sequence — HubSpot workflow, three emails, SMS, retargeting ad, and success metrics. All in a warm, human voice.</p>
+  </div>
+
+  <div class="api-gate fade-up">
+    <div class="api-gate-row">
+      <div class="api-gate-label">
+        <div class="api-gate-title">Step 1 — Anthropic API Key</div>
+        <div class="api-gate-desc">Get one free at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>. Stays in your browser. Never stored.</div>
+      </div>
+      <input class="api-input" id="apiKeyInput" type="password" placeholder="sk-ant-..." />
+      <button class="api-save-btn" onclick="saveKey()">Save Key</button>
+    </div>
+    <div class="api-ok" id="apiOk">✓ &nbsp;Key saved — ready to generate</div>
+  </div>
+
+  <div class="engine-layout fade-up">
+    <div class="engine-form">
+      <div>
+        <label class="ef-label">Faculty</label>
+        <select class="ef-select" id="ef-faculty">
+          <option value="Early Years Education">Early Years Education</option>
+          <option value="Special Needs Education / Montessori">Special Needs Education / Montessori</option>
+          <option value="Health Science &amp; Healthcare">Health Science &amp; Healthcare</option>
+          <option value="Sports (Science, Therapy, PE)">Sports (Science, Therapy, PE)</option>
+          <option value="Business of Fashion">Business of Fashion</option>
+          <option value="Facilities Management">Facilities Management</option>
+          <option value="Travel &amp; Tourism">Travel &amp; Tourism</option>
+        </select>
+      </div>
+      <div>
+        <label class="ef-label">Specific course (optional)</label>
+        <input class="ef-input" id="ef-course" placeholder="e.g. BA (Hons) Early Childhood Studies"/>
+        <div class="ef-help">Leave blank to keep it faculty-wide</div>
+      </div>
+      <div>
+        <label class="ef-label">Lifecycle stage</label>
+        <select class="ef-select" id="ef-stage">
+          <option value="Cold Lead">Cold Lead — first contact, zero relationship</option>
+          <option value="Abandoned Application">Abandoned Application — dropped mid-form</option>
+          <option value="Pre-Enrolment Push" selected>Pre-Enrolment Push — offer out, deposit pending</option>
+          <option value="Pre-Start Welcome">Pre-Start Welcome — enrolled, not started</option>
+          <option value="Re-engagement">Re-engagement — lapsed from previous intake</option>
+          <option value="Alumni Upsell">Alumni Upsell — graduate to next qualification</option>
+        </select>
+      </div>
+      <div>
+        <label class="ef-label">Intake</label>
+        <select class="ef-select" id="ef-intake">
+          <option value="September 2026">September 2026</option>
+          <option value="January 2026">January 2026</option>
+          <option value="Rolling admissions">Rolling admissions</option>
+        </select>
+      </div>
+      <div>
+        <label class="ef-label">Audience</label>
+        <select class="ef-select" id="ef-audience">
+          <option value="Career changer, 25-40, looking for a meaningful second career">Career changer (25–40)</option>
+          <option value="School leaver, 17-19, first time in further education">School leaver (17–19)</option>
+          <option value="Working professional upskilling, 28-45, juggling job and study">Working professional upskilling</option>
+          <option value="Mature returner, 35+, returning to study after a break">Mature returner (35+)</option>
+          <option value="International student considering a move to Ireland">International student</option>
+        </select>
+      </div>
+      <button class="gen-btn" id="genBtn" onclick="generate()">Generate Sequence →</button>
+    </div>
+
+    <div class="engine-output" id="engineOut">
+      <div class="eo-empty">
+        <div class="eo-empty-icon">◈</div>
+        <div class="eo-empty-text">Your sequence appears here</div>
+        <div class="eo-empty-sub">Pick your parameters on the left and hit generate. Full lifecycle sequence returns in about 10 seconds.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-left fade-up">Made with care<br/>in<span> Dublin.</span></div>
+    <div class="footer-right fade-up">
+      Soph · <a href="/cdn-cgi/l/email-protection#97faf6e4f8f9b9e4f8e7fffefef2d7f0faf6fefbb9f4f8fa"><span class="__cf_email__" data-cfemail="7815190b1716560b17081011111d381f15191114561b1715">[email&#160;protected]</span></a><br/>
+      Built with Claude by Anthropic<br/>
+      Hope it's useful x
+    </div>
+  </div>
+  <div class="footer-meta">
+    <span>© 2026 Sophie Mason</span>
+    <span>Lifecycle Engine v1.0</span>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+let apiKey = "";
+
+function saveKey() {
+  const val = document.getElementById("apiKeyInput").value.trim();
+  if (!val.startsWith("sk-")) { alert("That doesn't look like a valid Anthropic key (should start with sk-)"); return; }
+  apiKey = val;
+  document.getElementById("apiOk").style.display = "block";
+}
+
+window.addEventListener("scroll", () => {
+  document.getElementById("nav").classList.toggle("scrolled", window.scrollY > 60);
+});
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
+}, { threshold: 0.1 });
+document.querySelectorAll(".fade-up").forEach(el => obs.observe(el));
+
+function esc(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function escNL(s) { return esc(s).replace(/\n/g,"<br>"); }
+
+function cp(text, id) {
+  const payload = typeof text === "string" ? text : JSON.stringify(text, null, 2);
+  navigator.clipboard.writeText(payload);
+  const b = document.getElementById(id);
+  const prev = b.textContent;
+  b.textContent = "Copied"; b.classList.add("done");
+  setTimeout(() => { b.textContent = prev; b.classList.remove("done"); }, 1800);
+}
+
+async function generate() {
+  if (!apiKey) { alert("Paste your Anthropic API key first (Step 1 above)."); return; }
+  const faculty = document.getElementById("ef-faculty").value;
+  const course = document.getElementById("ef-course").value.trim() || "(faculty-wide, no specific course)";
+  const stage = document.getElementById("ef-stage").value;
+  const intake = document.getElementById("ef-intake").value;
+  const audience = document.getElementById("ef-audience").value;
+
+  const btn = document.getElementById("genBtn");
+  btn.disabled = true; btn.className = "gen-btn busy"; btn.textContent = "Generating…";
+  document.getElementById("engineOut").innerHTML = `
+    <div class="sk med"></div>
+    <div class="sk tall"></div>
+    <div class="sk short"></div>`;
+
+  const systemPrompt = `You are a senior lifecycle marketing strategist with deep expertise in HubSpot workflows and Irish higher education admissions funnels. You are generating a complete lifecycle campaign for Portobello Institute, a Dublin further and higher education college (founded 1981) offering career-focused courses in Early Years, Healthcare, Sports, Business of Fashion, Montessori/SEN, Facilities Management, and Travel & Tourism. Courses range from QQI certificates to London Met and Liverpool John Moores-validated degrees and masters.
+
+PORTOBELLO VOICE: Warm, direct, Irish, encouraging. Career-focused, never academic. Speaks to real motivations like second careers, meaningful work, following a passion. Use contractions. Short sentences. No em dashes. No corporate filler. No phrases like "in today's fast-paced world" or "unlock your potential". Write like a human admissions advisor who genuinely gets it.
+
+Return ONLY valid JSON. No markdown fences. No commentary. Exact structure:
+{
+  "workflow_name": "short descriptive HubSpot workflow name",
+  "workflow_trigger": "exact HubSpot trigger, e.g. 'Contact property: Lifecycle stage = Lead AND Form submission in last 24h'",
+  "workflow_goal": "exit condition, e.g. 'Application submitted = true'",
+  "workflow_steps": ["Step 1: immediate action", "Step 2: delay + action", "Step 3: branching logic", "Step 4: ...", "Step 5: ..."],
+  "email_sequence": [
+    {"day": 0, "subject": "subject line", "preview": "40-90 char preview text", "body": "plain text body, 90-140 words, line breaks allowed, ends with soft CTA"},
+    {"day": 3, "subject": "...", "preview": "...", "body": "..."},
+    {"day": 7, "subject": "...", "preview": "...", "body": "..."}
+  ],
+  "sms": "single SMS under 160 characters, conversational",
+  "retargeting_ad": {"headline": "max 10 words", "body": "max 25 words", "cta": "2-3 word button text"},
+  "success_metrics": [
+    {"label": "Primary KPI", "text": "what to measure and target"},
+    {"label": "Secondary KPI", "text": "..."},
+    {"label": "Diagnostic", "text": "..."}
+  ]
+}`;
+
+  const userMessage = `Faculty: ${faculty}
+Course: ${course}
+Lifecycle stage: ${stage}
+Intake: ${intake}
+Audience: ${audience}
+
+Generate the complete sequence.`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-5",
+        max_tokens: 2500,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userMessage }]
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const raw = data.content[0].text.replace(/```json|```/g,"").trim();
+    const out = JSON.parse(raw);
+
+    const wfSteps = (out.workflow_steps || []).map((s, i) =>
+      `<div class="wf-step"><span class="wf-step-n">${String(i+1).padStart(2,"0")}</span><span>${esc(s)}</span></div>`
+    ).join("");
+
+    const emails = (out.email_sequence || []).map((e, i) => `
+      <div class="em-card">
+        <div class="em-head">
+          <span class="em-day">Day ${e.day}</span>
+          <span class="em-subj">${esc(e.subject)}</span>
+          <button class="cp-btn" id="cpem${i}" onclick='cp(${JSON.stringify("Subject: " + e.subject + "\n\nPreview: " + e.preview + "\n\n" + e.body)}, "cpem${i}")'>Copy</button>
+        </div>
+        <div class="em-prev">${esc(e.preview)}</div>
+        <div class="em-body">${escNL(e.body)}</div>
+      </div>`).join("");
+
+    const metrics = (out.success_metrics || []).map(m => `
+      <div class="met-card">
+        <div class="met-label">${esc(m.label)}</div>
+        <div class="met-text">${esc(m.text)}</div>
+      </div>`).join("");
+
+    const smsText = out.sms || "";
+    const ad = out.retargeting_ad || {};
+
+    const metaLabel = `${faculty.split("(")[0].trim()} · ${stage} · ${intake}`;
+
+    const wfCopyText = `WORKFLOW: ${out.workflow_name}\n\nTRIGGER: ${out.workflow_trigger}\n\nGOAL: ${out.workflow_goal}\n\nSTEPS:\n${(out.workflow_steps||[]).map((s,i)=>`${i+1}. ${s}`).join("\n")}`;
+    const adCopyText = `Headline: ${ad.headline}\nBody: ${ad.body}\nCTA: ${ad.cta}`;
+
+    document.getElementById("engineOut").innerHTML = `
+      <div class="fi">
+        <div class="eo-meta"><span class="eo-meta-dot"></span>${esc(metaLabel)}</div>
+
+        <div class="eo-section">
+          <div class="eo-sh">
+            <div class="eo-sh-left">
+              <div class="eo-sh-icon">01</div>
+              <div>
+                <div class="eo-sh-title">HubSpot Workflow</div>
+                <div class="eo-sh-meta">Ready to build</div>
+              </div>
+            </div>
+            <button class="cp-btn" id="cpwf" onclick='cp(${JSON.stringify(wfCopyText)}, "cpwf")'>Copy</button>
+          </div>
+          <div class="eo-body">
+            <div class="wf-name">${esc(out.workflow_name)}</div>
+            <div class="wf-grid">
+              <div class="wf-k">Trigger</div>
+              <div class="wf-v">${esc(out.workflow_trigger)}</div>
+              <div class="wf-k">Goal</div>
+              <div class="wf-v">${esc(out.workflow_goal)}</div>
+              <div class="wf-k">Steps</div>
+              <div class="wf-v"><div class="wf-steps">${wfSteps}</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eo-section">
+          <div class="eo-sh">
+            <div class="eo-sh-left">
+              <div class="eo-sh-icon">02</div>
+              <div>
+                <div class="eo-sh-title">Email Sequence</div>
+                <div class="eo-sh-meta">3 touches · Warm human voice</div>
+              </div>
+            </div>
+          </div>
+          <div class="eo-body">
+            <div class="em-wrap">${emails}</div>
+          </div>
+        </div>
+
+        <div class="eo-section">
+          <div class="eo-sh">
+            <div class="eo-sh-left">
+              <div class="eo-sh-icon">03</div>
+              <div>
+                <div class="eo-sh-title">SMS + Retargeting</div>
+                <div class="eo-sh-meta">Mid-sequence reinforcement</div>
+              </div>
+            </div>
+          </div>
+          <div class="eo-body">
+            <div class="dual-grid">
+              <div>
+                <div class="sms-frame">
+                  <div class="sms-from">Admissions Team</div>
+                  <div class="sms-msg">${esc(smsText)}</div>
+                  <div class="sms-count">${smsText.length} chars</div>
+                </div>
+                <div style="text-align:center;margin-top:12px"><button class="cp-btn" id="cpsms" onclick='cp(${JSON.stringify(smsText)}, "cpsms")'>Copy SMS</button></div>
+              </div>
+              <div>
+                <div class="ad-frame">
+                  <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:14px">Meta / Instagram Ad</div>
+                  <div class="ad-hl">${esc(ad.headline||"")}</div>
+                  <div class="ad-bd">${esc(ad.body||"")}</div>
+                  <div class="ad-cta">${esc(ad.cta||"Learn more")}</div>
+                </div>
+                <div style="text-align:center;margin-top:12px"><button class="cp-btn" id="cpad" onclick='cp(${JSON.stringify(adCopyText)}, "cpad")'>Copy Ad</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eo-section">
+          <div class="eo-sh">
+            <div class="eo-sh-left">
+              <div class="eo-sh-icon">04</div>
+              <div>
+                <div class="eo-sh-title">Success Metrics</div>
+                <div class="eo-sh-meta">How to measure it in Hub
